@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<style>
+			
+		</style>
+		<script>
+			/*
+				onchange
+					失去焦点的时候input,值发生变化的时候触发
+				select
+					当表单控件状态发生变化时触发
+			*/
+		</script>
+	</head>
+
+	<body>
+		<p>请选择送货地点：</p>
+		<select id="se1">
+			<option>请选择</option>
+		</select>
+		<select id="se2">
+			<option>请选择</option>
+		</select>
+		<select id="se3">
+			<option>请选择</option>
+		</select>
+		<script src="citys.js"></script>
+		<script>
+
+			var se1 = document.getElementById("se1");
+			var se2 = document.getElementById("se2");
+			var str = '';
+			for( var i = 0; i < data.length; i++ ){
+				str += '<option value="'+data[i].name+'">'+data[i].name+'</option>';
+			}
+
+			se1.innerHTML = str;
+
+			var subCity = null;  //公共变量
+
+			//当选择了省份的时候，se2要渲染这个省份对应市
+			se1.onchange = function (){
+				//要根据变化的这个value值，到数据中检索那一条数据数据的name和这个value相同，如果相同就取出这条数据下的sub这个数组
+				var val = this.value;
+
+				for( var i = 0; i < data.length; i++ ){
+					if( data[i].name === val ){
+						subCity = data[i].sub;
+						break;
+					}
+				}
+
+				//找到这些城市，要把城市渲染在se2中
+				if( subCity ){
+					var str = '';
+					for( var i = 0; i < subCity.length; i++ ){
+						str += '<option value="'+subCity[i].name+'">'+subCity[i].name+'</option>';
+					}
+					se2.innerHTML = str;
+				}
+			};
+
+			//当选择市的时候，要渲染这个市下面的县
+			se2.onchange = function (){
+				var val = this.value;
+
+				if( subCity ){
+					var subCounty = null; //存县
+					for( var i = 0; i < subCity.length; i++ ){
+						if( subCity[i].name === val ){
+							subCounty = subCity[i].sub;
+							break;
+						}
+					}
+
+					if(subCounty){
+						var str = '';
+						for( var i = 0; i < subCounty.length; i++ ){
+							str += '<option value="'+subCounty[i].name+'">'+subCounty[i].name+'</option>';
+						}
+						se3.innerHTML = str;
+					}else{
+						se3.innerHTML = '<option>请选择</option>';
+					}
+				}
+			};
+
+		</script>
+	</body>
+</html>
